@@ -62,6 +62,9 @@ TRANSLATIONS = {
         'Günlük Uyku Süresi (Dakika)': 'Daily Sleep Duration (Minutes)',
         'Kaygı Puanı': 'Anxiety Score',
         'Motivasyon Puanı': 'Motivation Score',
+        # Debug için ek kontrol
+        'Türkçe': 'Turkish',
+        'English': 'English',
     },
     'tr': {
         # Türkçe metinler olduğu gibi kalacak
@@ -83,6 +86,9 @@ def trans(context, text):
     """Basit çeviri tag'i"""
     request = context.get('request')
     current_language = get_current_language_from_request(request)
+    
+    # Debug için log ekleyelim
+    # print(f"DEBUG: Current language: {current_language}, Text: '{text}'")
     
     if current_language == 'en' and text in TRANSLATIONS['en']:
         return mark_safe(TRANSLATIONS['en'][text])

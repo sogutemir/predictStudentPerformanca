@@ -1,6 +1,11 @@
-{% extends 'predictor/base.html' %} {% load translation_tags %} {% block title
-%}{% trans "Ana Sayfa" %} - {% trans "Öğrenci Performans Tahmincisi" %}{%
-endblock %} {% block extra_css %}
+{% extends 'predictor/base.html' %}
+{% load translation_tags %}
+
+{% block title %}
+{% trans "Ana Sayfa" %} - {% trans "Öğrenci Performans Tahmincisi" %}
+{% endblock %}
+
+{% block extra_css %}
 <style>
   .feature-icon {
     font-size: 2.5rem;
@@ -53,7 +58,9 @@ endblock %} {% block extra_css %}
     color: #0d6efd;
   }
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <div class="row">
   <div class="col-md-12">
     {% if messages %}
@@ -78,13 +85,11 @@ endblock %} {% block extra_css %}
     <div class="jumbotron bg-light p-5 rounded">
       <h1 class="display-4">{% trans "Öğrenci Performans Tahmincisi" %}</h1>
       <p class="lead">
-        {% trans "Bu uygulama, öğrenci verilerini analiz ederek üniversite sınav
-        puanlarını tahmin etmeye yardımcı olur." %}
+        {% trans "Bu uygulama, öğrenci verilerini analiz ederek üniversite sınav puanlarını tahmin etmeye yardımcı olur." %}
       </p>
       <hr class="my-4" />
       <p>
-        {% trans "Öğrenci bilgilerini girerek gelecekteki üniversite sınav
-        performansını tahmin edebilirsiniz." %}
+        {% trans "Öğrenci bilgilerini girerek gelecekteki üniversite sınav performansını tahmin edebilirsiniz." %}
       </p>
       <a
         class="btn btn-primary btn-lg"
@@ -155,7 +160,9 @@ endblock %} {% block extra_css %}
     </div>
   </div>
 </div>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+{% block extra_js %}
 <script>
   // Bootstrap Icons CDN ekle
   if (!document.getElementById("bootstrap-icons")) {
