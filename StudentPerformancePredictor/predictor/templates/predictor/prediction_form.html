@@ -1,5 +1,11 @@
-{% extends 'predictor/base.html' %} {% load translation_tags %} {% block title
-%}{% trans "Öğrenci Performans Tahmini" %}{% endblock %} {% block extra_css %}
+{% extends 'predictor/base.html' %}
+{% load translation_tags %}
+
+{% block title %}
+    {% trans "Öğrenci Performans Tahmini" %}
+{% endblock %}
+
+{% block extra_css %}
 <style>
   .score-gauge {
     position: relative;
@@ -79,7 +85,9 @@
     margin-top: 0.25rem;
   }
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <div class="row">
   <div class="col-md-8 offset-md-2">
     {% if messages %} {% for message in messages %}
@@ -108,10 +116,12 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="{{ form.gpa.id_for_label }}" class="form-label">
-                {{ form.gpa.label }}
+                {{ form.gpa|translate_field_label:request }}
               </label>
               {{ form.gpa }} {% if form.gpa.help_text %}
-              <div class="form-help-text">{{ form.gpa.help_text }}</div>
+              <div class="form-help-text">
+                {{ form.gpa|translate_field_help_text:request }}
+              </div>
               {% endif %}
             </div>
             <div class="col-md-6 mb-3">
@@ -119,11 +129,11 @@
                 for="{{ form.avg_exam_score.id_for_label }}"
                 class="form-label"
               >
-                {{ form.avg_exam_score.label }}
+                {{ form.avg_exam_score|translate_field_label:request }}
               </label>
               {{ form.avg_exam_score }} {% if form.avg_exam_score.help_text %}
               <div class="form-help-text">
-                {{ form.avg_exam_score.help_text }}
+                {{ form.avg_exam_score|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -135,10 +145,12 @@
                 for="{{ form.absent_rate.id_for_label }}"
                 class="form-label"
               >
-                {{ form.absent_rate.label }}
+                {{ form.absent_rate|translate_field_label:request }}
               </label>
               {{ form.absent_rate }} {% if form.absent_rate.help_text %}
-              <div class="form-help-text">{{ form.absent_rate.help_text }}</div>
+              <div class="form-help-text">
+                {{ form.absent_rate|translate_field_help_text:request }}
+              </div>
               {% endif %}
             </div>
             <div class="col-md-6 mb-3">
@@ -146,10 +158,12 @@
                 for="{{ form.daily_study.id_for_label }}"
                 class="form-label"
               >
-                {{ form.daily_study.label }}
+                {{ form.daily_study|translate_field_label:request }}
               </label>
               {{ form.daily_study }} {% if form.daily_study.help_text %}
-              <div class="form-help-text">{{ form.daily_study.help_text }}</div>
+              <div class="form-help-text">
+                {{ form.daily_study|translate_field_help_text:request }}
+              </div>
               {% endif %}
             </div>
           </div>
@@ -160,11 +174,11 @@
                 for="{{ form.avg_sleep_time.id_for_label }}"
                 class="form-label"
               >
-                {{ form.avg_sleep_time.label }}
+                {{ form.avg_sleep_time|translate_field_label:request }}
               </label>
               {{ form.avg_sleep_time }} {% if form.avg_sleep_time.help_text %}
               <div class="form-help-text">
-                {{ form.avg_sleep_time.help_text }}
+                {{ form.avg_sleep_time|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -173,12 +187,11 @@
                 for="{{ form.daily_social_media.id_for_label }}"
                 class="form-label"
               >
-                {{ form.daily_social_media.label }}
+                {{ form.daily_social_media|translate_field_label:request }}
               </label>
-              {{ form.daily_social_media }} {% if
-              form.daily_social_media.help_text %}
+              {{ form.daily_social_media }} {% if form.daily_social_media.help_text %}
               <div class="form-help-text">
-                {{ form.daily_social_media.help_text }}
+                {{ form.daily_social_media|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -190,11 +203,11 @@
                 for="{{ form.anxiety_score.id_for_label }}"
                 class="form-label"
               >
-                {{ form.anxiety_score.label }}
+                {{ form.anxiety_score|translate_field_label:request }}
               </label>
               {{ form.anxiety_score }} {% if form.anxiety_score.help_text %}
               <div class="form-help-text">
-                {{ form.anxiety_score.help_text }}
+                {{ form.anxiety_score|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -203,12 +216,11 @@
                 for="{{ form.motivation_score.id_for_label }}"
                 class="form-label"
               >
-                {{ form.motivation_score.label }}
+                {{ form.motivation_score|translate_field_label:request }}
               </label>
-              {{ form.motivation_score }} {% if form.motivation_score.help_text
-              %}
+              {{ form.motivation_score }} {% if form.motivation_score.help_text %}
               <div class="form-help-text">
-                {{ form.motivation_score.help_text }}
+                {{ form.motivation_score|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -220,10 +232,12 @@
                 for="{{ form.parent_edu.id_for_label }}"
                 class="form-label"
               >
-                {{ form.parent_edu.label }}
+                {{ form.parent_edu|translate_field_label:request }}
               </label>
               {{ form.parent_edu }} {% if form.parent_edu.help_text %}
-              <div class="form-help-text">{{ form.parent_edu.help_text }}</div>
+              <div class="form-help-text">
+                {{ form.parent_edu|translate_field_help_text:request }}
+              </div>
               {% endif %}
             </div>
             <div class="col-md-6 mb-3">
@@ -231,10 +245,12 @@
                 for="{{ form.cram_school.id_for_label }}"
                 class="form-label"
               >
-                {{ form.cram_school.label }}
+                {{ form.cram_school|translate_field_label:request }}
               </label>
               {{ form.cram_school }} {% if form.cram_school.help_text %}
-              <div class="form-help-text">{{ form.cram_school.help_text }}</div>
+              <div class="form-help-text">
+                {{ form.cram_school|translate_field_help_text:request }}
+              </div>
               {% endif %}
             </div>
           </div>
@@ -245,11 +261,11 @@
                 for="{{ form.private_lesson.id_for_label }}"
                 class="form-label"
               >
-                {{ form.private_lesson.label }}
+                {{ form.private_lesson|translate_field_label:request }}
               </label>
               {{ form.private_lesson }} {% if form.private_lesson.help_text %}
               <div class="form-help-text">
-                {{ form.private_lesson.help_text }}
+                {{ form.private_lesson|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -258,11 +274,11 @@
                 for="{{ form.private_room.id_for_label }}"
                 class="form-label"
               >
-                {{ form.private_room.label }}
+                {{ form.private_room|translate_field_label:request }}
               </label>
               {{ form.private_room }} {% if form.private_room.help_text %}
               <div class="form-help-text">
-                {{ form.private_room.help_text }}
+                {{ form.private_room|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -271,11 +287,11 @@
                 for="{{ form.study_resources.id_for_label }}"
                 class="form-label"
               >
-                {{ form.study_resources.label }}
+                {{ form.study_resources|translate_field_label:request }}
               </label>
               {{ form.study_resources }} {% if form.study_resources.help_text %}
               <div class="form-help-text">
-                {{ form.study_resources.help_text }}
+                {{ form.study_resources|translate_field_help_text:request }}
               </div>
               {% endif %}
             </div>
@@ -283,7 +299,7 @@
 
           <div class="d-grid">
             <button type="submit" class="btn btn-primary btn-lg mt-3">
-              Tahmin Et
+              {% trans "Tahmin Et" %}
             </button>
           </div>
         </form>
@@ -295,14 +311,14 @@
       <div
         class="card-header {% if prediction_result.success %}bg-success{% else %}bg-danger{% endif %} text-white"
       >
-        <h4 class="mb-0">Tahmin Sonucu</h4>
+        <h4 class="mb-0">{% trans "Tahmin Sonucu" %}</h4>
       </div>
       <div class="card-body">
         {% if prediction_result.error %}
         <div class="alert alert-danger">{{ prediction_result.error }}</div>
         {% else %}
         <div class="text-center">
-          <h3>Tahmini Üniversite Sınav Puanı</h3>
+          <h3>{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
 
           <div class="score-gauge">
             <div class="gauge-body">
@@ -321,18 +337,18 @@
 
           <div class="alert alert-info mt-3">
             <i class="bi bi-info-circle"></i>
-            Bu puan, girilen verilere dayanarak yapılan bir tahmindir ve gerçek
-            sonuçlar farklılık gösterebilir.
+            {% trans "Bu puan, girilen verilere dayanarak yapılan bir tahmindir
+            ve gerçek sonuçlar farklılık gösterebilir." %}
           </div>
         </div>
 
         <div class="mt-4">
-          <h5>Girilen Veriler:</h5>
+          <h5>{% trans "Girilen Veriler:" %}</h5>
           <ul class="list-group">
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              GPA (Not Ortalaması)
+              {% trans "GPA (Not Ortalaması)" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.gpa }}</span
               >
@@ -340,7 +356,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Ortalama Sınav Puanı
+              {% trans "Ortalama Sınav Puanı" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.avg_exam_score }}</span
               >
@@ -348,7 +364,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Devamsızlık Oranı
+              {% trans "Devamsızlık Oranı" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.absent_rate }}</span
               >
@@ -356,7 +372,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Günlük Çalışma Süresi (Dakika)
+              {% trans "Günlük Çalışma Süresi (Dakika)" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.daily_study }}</span
               >
@@ -364,7 +380,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Günlük Uyku Süresi (Dakika)
+              {% trans "Günlük Uyku Süresi (Dakika)" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.avg_sleep_time }}</span
               >
@@ -372,7 +388,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Günlük Sosyal Medya Kullanımı (Dakika)
+              {% trans "Günlük Sosyal Medya Kullanımı (Dakika)" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.daily_social_media }}</span
               >
@@ -380,7 +396,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Kaygı Puanı
+              {% trans "Kaygı Puanı" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.anxiety_score }}</span
               >
@@ -388,7 +404,7 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Motivasyon Puanı
+              {% trans "Motivasyon Puanı" %}
               <span class="badge bg-primary rounded-pill"
                 >{{ prediction_result.input_data.motivation_score }}</span
               >
@@ -396,59 +412,58 @@
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Ebeveyn Eğitim Durumu
+              {% trans "Ebeveyn Eğitim Durumu" %}
               <span class="badge bg-secondary rounded-pill">
-                {% if prediction_result.input_data.parent_edu == 'p' %}İlkokul
-                {% elif prediction_result.input_data.parent_edu == 'm'
-                %}Ortaokul {% elif prediction_result.input_data.parent_edu ==
-                'h' %}Lise {% elif prediction_result.input_data.parent_edu ==
-                'u' %}Üniversite {% endif %}
+                {% if prediction_result.input_data.parent_edu == 'p' %} {% trans
+                "İlkokul" %} {% elif prediction_result.input_data.parent_edu ==
+                'm' %} {% trans "Ortaokul" %} {% elif
+                prediction_result.input_data.parent_edu == 'h' %} {% trans
+                "Lise" %} {% elif prediction_result.input_data.parent_edu == 'u'
+                %} {% trans "Üniversite" %} {% endif %}
               </span>
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Dershaneye Gidiyor mu?
+              {% trans "Dershaneye Gidiyor mu?" %}
               <span
                 class="badge {% if prediction_result.input_data.cram_school == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
               >
-                {{ prediction_result.input_data.cram_school|yesno:"Evet,Hayır"
-                }}
+                {% if prediction_result.input_data.cram_school == 'yes' %} {%
+                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
               </span>
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Özel Ders Alıyor mu?
+              {% trans "Özel Ders Alıyor mu?" %}
               <span
                 class="badge {% if prediction_result.input_data.private_lesson == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
               >
-                {{
-                prediction_result.input_data.private_lesson|yesno:"Evet,Hayır"
-                }}
+                {% if prediction_result.input_data.private_lesson == 'yes' %} {%
+                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
               </span>
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Kendine Ait Odası Var mı?
+              {% trans "Kendine Ait Odası Var mı?" %}
               <span
                 class="badge {% if prediction_result.input_data.private_room == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
               >
-                {{ prediction_result.input_data.private_room|yesno:"Evet,Hayır"
-                }}
+                {% if prediction_result.input_data.private_room == 'yes' %} {%
+                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
               </span>
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
             >
-              Yeterli Çalışma Kaynakları Var mı?
+              {% trans "Yeterli Çalışma Kaynakları Var mı?" %}
               <span
                 class="badge {% if prediction_result.input_data.study_resources == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
               >
-                {{
-                prediction_result.input_data.study_resources|yesno:"Evet,Hayır"
-                }}
+                {% if prediction_result.input_data.study_resources == 'yes' %}
+                {% trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
               </span>
             </li>
           </ul>
@@ -459,19 +474,18 @@
     {% endif %}
   </div>
 </div>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+{% block extra_js %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const gaugeElement = document.getElementById('gauge-fill');
     if (gaugeElement) {
       const score = {{ prediction_result.predicted_score|default:0 }};
-      const maxScore = 500; // Maksimum puanı gerçek veri aralığına göre ayarlıyoruz
+      const maxScore = 500;
       const fillPercentage = (score / maxScore) * 100;
-
-      // Güvenli bir aralık - 0% ile 100% arasında
       const safeFillPercentage = Math.min(100, Math.max(0, fillPercentage));
 
-      // Animasyonu başlat
       setTimeout(() => {
         gaugeElement.style.height = safeFillPercentage + '%';
       }, 200);

@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.utils import translation
 from .forms import PredictionForm
 from .models import PredictionHistory
 import json
@@ -25,10 +24,17 @@ except ImportError as e:
 
 def home(request):
     """Ana sayfa view'i"""
-    return render(request, 'predictor/home.html')
+    context = {
+        'request': request,  # Context'e request ekle
+    }
+    return render(request, 'predictor/home.html', context)
 
 def prediction_form(request):
     """Tahmin formu view'i"""
+    context = {
+        'request': request,  # Context'e request ekle
+    }
+    
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
@@ -84,16 +90,16 @@ def prediction_form(request):
             else:
                 messages.error(request, prediction_result.get('error', 'Tahmin oluşturulurken bir hata oluştu.'))
             
-            return render(request, 'predictor/prediction_form.html', {
+            context.update({
                 'form': form,
                 'prediction_result': prediction_result
             })
+            return render(request, 'predictor/prediction_form.html', context)
     else:
         form = PredictionForm()
     
-    return render(request, 'predictor/prediction_form.html', {
-        'form': form
-    })
+    context['form'] = form
+    return render(request, 'predictor/prediction_form.html', context)
 
 @csrf_exempt
 def api_predict(request):
@@ -175,14 +181,12 @@ def set_language(request):
     if request.method == 'POST':
         language = request.POST.get('language', 'tr')
         
-        # Django'nun standart dil değiştirme mekanizmasını kullan
-        translation.activate(language)
+        # Session'da dil bilgisini sakla
         request.session['django_language'] = language
         
         # Geri dönülecek sayfa
         next_url = request.POST.get('next', '/')
         response = redirect(next_url)
-        response.set_cookie('django_language', language)
         return response
     
     return redirect('home')

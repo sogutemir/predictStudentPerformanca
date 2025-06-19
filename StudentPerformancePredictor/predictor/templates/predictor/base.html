@@ -1,4 +1,4 @@
-{% load translation_tags %} {% load i18n %}
+{% load translation_tags %}
 <!DOCTYPE html>
 <html lang="tr">
   <head>
@@ -86,48 +86,20 @@
                 aria-labelledby="languageDropdown"
               >
                 <li>
-                  <form
-                    action="{% url 'set_language' %}"
-                    method="post"
-                    style="margin: 0"
+                  <a
+                    href="?lang=tr"
+                    class="dropdown-item {% if current_lang == 'tr' %}active{% endif %}"
                   >
-                    {% csrf_token %}
-                    <input
-                      name="next"
-                      type="hidden"
-                      value="{{ request.get_full_path }}"
-                    />
-                    <button
-                      type="submit"
-                      name="language"
-                      value="tr"
-                      class="dropdown-item {% if current_lang == 'tr' %}active{% endif %}"
-                    >
-                      🇹🇷 Türkçe
-                    </button>
-                  </form>
+                    🇹🇷 Türkçe
+                  </a>
                 </li>
                 <li>
-                  <form
-                    action="{% url 'set_language' %}"
-                    method="post"
-                    style="margin: 0"
+                  <a
+                    href="?lang=en"
+                    class="dropdown-item {% if current_lang == 'en' %}active{% endif %}"
                   >
-                    {% csrf_token %}
-                    <input
-                      name="next"
-                      type="hidden"
-                      value="{{ request.get_full_path }}"
-                    />
-                    <button
-                      type="submit"
-                      name="language"
-                      value="en"
-                      class="dropdown-item {% if current_lang == 'en' %}active{% endif %}"
-                    >
-                      🇺🇸 English
-                    </button>
-                  </form>
+                    🇺🇸 English
+                  </a>
                 </li>
               </ul>
             </li>
