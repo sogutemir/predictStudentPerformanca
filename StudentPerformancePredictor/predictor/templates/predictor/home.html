@@ -1,5 +1,6 @@
-{% extends 'predictor/base.html' %} {% block title %}Ana Sayfa - Öğrenci
-Performans Tahmincisi{% endblock %} {% block extra_css %}
+{% extends 'predictor/base.html' %} {% load translation_tags %} {% block title
+%}{% trans "Ana Sayfa" %} - {% trans "Öğrenci Performans Tahmincisi" %}{%
+endblock %} {% block extra_css %}
 <style>
   .feature-icon {
     font-size: 2.5rem;
@@ -75,106 +76,42 @@ Performans Tahmincisi{% endblock %} {% block extra_css %}
     {% endif %}
 
     <div class="jumbotron bg-light p-5 rounded">
-      <h1 class="display-4">Öğrenci Performans Tahmincisi</h1>
+      <h1 class="display-4">{% trans "Öğrenci Performans Tahmincisi" %}</h1>
       <p class="lead">
-        Bu uygulama, öğrenci verilerini analiz ederek üniversite sınav
-        puanlarını tahmin etmeye yardımcı olur.
+        {% trans "Bu uygulama, öğrenci verilerini analiz ederek üniversite sınav
+        puanlarını tahmin etmeye yardımcı olur." %}
       </p>
       <hr class="my-4" />
       <p>
-        Öğrenci bilgilerini girerek gelecekteki üniversite sınav performansını
-        tahmin edebilirsiniz.
+        {% trans "Öğrenci bilgilerini girerek gelecekteki üniversite sınav
+        performansını tahmin edebilirsiniz." %}
       </p>
       <a
         class="btn btn-primary btn-lg"
         href="{% url 'prediction_form' %}"
         role="button"
-        >Başlayın</a
+        >{% trans "Başlayın" %}</a
       >
-    </div>
-  </div>
-</div>
-
-<div class="row mt-5">
-  <div class="col-md-12 text-center mb-4">
-    <h2>Nasıl Çalışır?</h2>
-    <p class="text-muted">
-      Öğrenci performansı tahmini için makine öğrenmesi modelimiz olan Linear
-      Regression kullanılır
-    </p>
-  </div>
-</div>
-
-<div class="row mb-5">
-  <div class="col-md-4 mb-4">
-    <div class="card feature-card">
-      <div class="card-body text-center">
-        <div class="feature-icon">
-          <i class="bi bi-cloud-upload"></i>
-        </div>
-        <h5 class="card-title">Veri Girişi</h5>
-        <p class="card-text">
-          Öğrenci akademik performansı, çalışma alışkanlıkları ve demografik
-          bilgilerini girin.
-        </p>
-        <a href="{% url 'prediction_form' %}" class="btn btn-outline-primary"
-          >Veri Gir</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card feature-card">
-      <div class="card-body text-center">
-        <div class="feature-icon">
-          <i class="bi bi-graph-up"></i>
-        </div>
-        <h5 class="card-title">Performans Analizi</h5>
-        <p class="card-text">
-          Gelişmiş makine öğrenmesi algoritmaları ile öğrenci performansını
-          değerlendirin ve etkileyen faktörleri belirleyin.
-        </p>
-        <a href="{% url 'prediction_form' %}" class="btn btn-outline-primary"
-          >Analiz Et</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card feature-card">
-      <div class="card-body text-center">
-        <div class="feature-icon">
-          <i class="bi bi-lightning"></i>
-        </div>
-        <h5 class="card-title">Performans Tahmini</h5>
-        <p class="card-text">
-          Yapay zeka destekli modellerle öğrencilerin gelecekteki üniversite
-          sınav puanlarını tahmin edin.
-        </p>
-        <a href="{% url 'prediction_form' %}" class="btn btn-outline-primary"
-          >Tahmin Et</a
-        >
-      </div>
     </div>
   </div>
 </div>
 
 <div class="row mt-5 mb-5">
   <div class="col-md-12 text-center mb-4">
-    <h2>Model İstatistikleri</h2>
+    <h2>{% trans "Model İstatistikleri" %}</h2>
     <p class="text-muted">
-      Linear Regression modelimizin performans istatistikleri
+      {% trans "Linear Regression modelimizin performans istatistikleri" %}
     </p>
   </div>
 
   <div class="col-md-3 mb-4">
     <div class="card stats-card">
       <div class="stats-header text-center">
-        <h5 class="mb-0">Tahmin Doğruluğu</h5>
+        <h5 class="mb-0">{% trans "Tahmin Doğruluğu" %}</h5>
       </div>
       <div class="card-body text-center">
         <div class="stats-value">%85</div>
-        <p class="text-muted">Ortalama tahmin başarısı</p>
+        <p class="text-muted">{% trans "Ortalama tahmin başarısı" %}</p>
       </div>
     </div>
   </div>
@@ -186,7 +123,7 @@ Performans Tahmincisi{% endblock %} {% block extra_css %}
       </div>
       <div class="card-body text-center">
         <div class="stats-value">42.8</div>
-        <p class="text-muted">Ortalama kare hatanın karekökü</p>
+        <p class="text-muted">{% trans "Ortalama kare hatanın karekökü" %}</p>
       </div>
     </div>
   </div>
@@ -194,11 +131,11 @@ Performans Tahmincisi{% endblock %} {% block extra_css %}
   <div class="col-md-3 mb-4">
     <div class="card stats-card">
       <div class="stats-header text-center">
-        <h5 class="mb-0">R² Değeri</h5>
+        <h5 class="mb-0">{% trans "R² Değeri" %}</h5>
       </div>
       <div class="card-body text-center">
         <div class="stats-value">0.85</div>
-        <p class="text-muted">Belirleme katsayısı</p>
+        <p class="text-muted">{% trans "Belirleme katsayısı" %}</p>
       </div>
     </div>
   </div>
@@ -206,83 +143,18 @@ Performans Tahmincisi{% endblock %} {% block extra_css %}
   <div class="col-md-3 mb-4">
     <div class="card stats-card">
       <div class="stats-header text-center">
-        <h5 class="mb-0">Değişken Sayısı</h5>
+        <h5 class="mb-0">{% trans "Değişken Sayısı" %}</h5>
       </div>
       <div class="card-body text-center">
         <div class="stats-value">16</div>
-        <p class="text-muted">Modelde kullanılan özellik sayısı</p>
+        <p class="text-muted">
+          {% trans "Modelde kullanılan özellik sayısı" %}
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row mt-4">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Öğrenci Başarısını Etkileyen Faktörler</h5>
-      </div>
-      <div class="card-body">
-        <p>Modelimize göre öğrenci başarısını etkileyen en önemli faktörler:</p>
-        <ul class="list-group mb-3">
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            GPA ve ortalama sınav puanları
-            <span class="badge bg-primary rounded-pill">%30 etki</span>
-          </li>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            Günlük çalışma süresi
-            <span class="badge bg-primary rounded-pill">%20 etki</span>
-          </li>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            Dershane ve özel ders
-            <span class="badge bg-primary rounded-pill">%20 etki</span>
-          </li>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            Motivasyon ve kaygı puanları
-            <span class="badge bg-primary rounded-pill">%15 etki</span>
-          </li>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            Uyku süresi ve çalışma ortamı
-            <span class="badge bg-primary rounded-pill">%10 etki</span>
-          </li>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            Ebeveyn eğitim durumu
-            <span class="badge bg-primary rounded-pill">%5 etki</span>
-          </li>
-        </ul>
-        <div class="d-flex justify-content-between">
-          <a href="{% url 'prediction_form' %}" class="btn btn-primary"
-            >Şimdi Tahmin Yap</a
-          >
-          <div>
-            <a
-              href="{% url 'create_model' %}"
-              class="btn btn-outline-secondary me-2"
-              >Dummy Model Oluştur</a
-            >
-            <a
-              href="{% url 'create_sample_model' %}"
-              class="btn btn-outline-info"
-              >Örnek Model Oluştur</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %} {% block extra_js %}
 <script>
   // Bootstrap Icons CDN ekle

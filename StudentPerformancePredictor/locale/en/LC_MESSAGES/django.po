@@ -1,0 +1,73 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-19 18:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Öğrenci Performans Tahmincisi"
+msgstr "Student Performance Predictor"
+
+msgid "Ana Sayfa"
+msgstr "Home"
+
+msgid "Performans Tahmini"
+msgstr "Performance Prediction"
+
+msgid "Bu uygulama, öğrenci verilerini analiz ederek üniversite sınav puanlarını tahmin etmeye yardımcı olur."
+msgstr "This application helps predict university exam scores by analyzing student data."
+
+msgid "Öğrenci bilgilerini girerek gelecekteki üniversite sınav performansını tahmin edebilirsiniz."
+msgstr "You can predict future university exam performance by entering student information."
+
+msgid "Başlayın"
+msgstr "Get Started"
+
+msgid "Model İstatistikleri"
+msgstr "Model Statistics"
+
+msgid "Linear Regression modelimizin performans istatistikleri"
+msgstr "Performance statistics of our Linear Regression model"
+
+msgid "Tahmin Doğruluğu"
+msgstr "Prediction Accuracy"
+
+msgid "Ortalama tahmin başarısı"
+msgstr "Average prediction success"
+
+msgid "Ortalama kare hatanın karekökü"
+msgstr "Root Mean Square Error"
+
+msgid "R² Değeri"
+msgstr "R² Value"
+
+msgid "Belirleme katsayısı"
+msgstr "Coefficient of determination"
+
+msgid "Değişken Sayısı"
+msgstr "Number of Variables"
+
+msgid "Modelde kullanılan özellik sayısı"
+msgstr "Number of features used in the model"
+
+msgid "Öğrenci Performans Tahmini"
+msgstr "Student Performance Prediction"
+
+msgid "GPA (Not Ortalaması)"
+msgstr "GPA (Grade Point Average)"
+
+msgid "Öğrencinin genel not ortalaması (0-100 arası)"
+msgstr "Student's overall grade point average (0-100 range)" 

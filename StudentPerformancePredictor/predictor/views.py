@@ -150,3 +150,15 @@ def create_sample_model_view(request):
         return redirect('home')
     
     return HttpResponse("Bu sayfa sadece GET isteklerini kabul eder", status=405)
+
+def set_language(request):
+    """Dil değiştirme view'i"""
+    if request.method == 'POST':
+        language = request.POST.get('language', 'tr')
+        request.session['language'] = language
+        
+        # Geri dönülecek sayfa
+        next_url = request.POST.get('next', '/')
+        return redirect(next_url)
+    
+    return redirect('home')

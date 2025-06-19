@@ -1,5 +1,5 @@
-{% extends 'predictor/base.html' %} {% block title %}Öğrenci Performans
-Tahmini{% endblock %} {% block extra_css %}
+{% extends 'predictor/base.html' %} {% load translation_tags %} {% block title
+%}{% trans "Öğrenci Performans Tahmini" %}{% endblock %} {% block extra_css %}
 <style>
   .score-gauge {
     position: relative;
@@ -99,7 +99,7 @@ Tahmini{% endblock %} {% block extra_css %}
 
     <div class="card">
       <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Öğrenci Performans Tahmini</h4>
+        <h4 class="mb-0">{% trans "Öğrenci Performans Tahmini" %}</h4>
       </div>
       <div class="card-body">
         <form method="post">

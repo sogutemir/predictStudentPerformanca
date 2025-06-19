@@ -1,12 +1,13 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 class PredictionForm(forms.Form):
     gpa = forms.FloatField(
-        label='GPA (Not Ortalaması)',
+        label=_('GPA (Not Ortalaması)'),
         min_value=0,
         max_value=100,
         widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-        help_text='Öğrencinin genel not ortalaması (0-100 arası)'
+        help_text=_('Öğrencinin genel not ortalaması (0-100 arası)')
     )
     
     avg_exam_score = forms.FloatField(
