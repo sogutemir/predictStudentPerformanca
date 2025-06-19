@@ -153,6 +153,25 @@
     padding-left: 1rem;
   }
 
+  .error-text {
+    font-size: 0.85rem;
+    color: #ff4757;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    font-weight: 600;
+    display: none;
+  }
+
+  .modern-input.error {
+    border-color: #ff4757;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+  }
+
+  .modern-select.error {
+    border-color: #ff4757;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+  }
+
   .nav-buttons {
     display: flex;
     justify-content: space-between;
@@ -543,6 +562,7 @@
                 {% if form.gpa.help_text %}
                 <div class="help-text">{{ form.gpa|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-gpa">{% trans "GPA 0-100 arasında olmalıdır" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -553,6 +573,7 @@
                 {% if form.avg_exam_score.help_text %}
                 <div class="help-text">{{ form.avg_exam_score|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-avg_exam_score">{% trans "Sınav puanı 0-500 arasında olmalıdır" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -563,6 +584,7 @@
                 {% if form.absent_rate.help_text %}
                 <div class="help-text">{{ form.absent_rate|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-absent_rate">{% trans "Devamsızlık oranı 0-1 arasında olmalıdır (örn: 0.1 = %10)" %}</div>
               </div>
             </div>
           </div>
@@ -579,6 +601,7 @@
                 {% if form.daily_study.help_text %}
                 <div class="help-text">{{ form.daily_study|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-daily_study">{% trans "Günlük çalışma süresi 0-1440 dakika arasında olmalıdır" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -589,6 +612,7 @@
                 {% if form.avg_sleep_time.help_text %}
                 <div class="help-text">{{ form.avg_sleep_time|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-avg_sleep_time">{% trans "Uyku süresi 60-1440 dakika arasında olmalıdır (1-24 saat)" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -599,6 +623,7 @@
                 {% if form.daily_social_media.help_text %}
                 <div class="help-text">{{ form.daily_social_media|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-daily_social_media">{% trans "Sosyal medya kullanımı 0-1440 dakika arasında olmalıdır" %}</div>
               </div>
             </div>
           </div>
@@ -615,6 +640,7 @@
                 {% if form.anxiety_score.help_text %}
                 <div class="help-text">{{ form.anxiety_score|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-anxiety_score">{% trans "Kaygı puanı 1-10 arasında olmalıdır" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -625,6 +651,7 @@
                 {% if form.motivation_score.help_text %}
                 <div class="help-text">{{ form.motivation_score|translate_field_help_text:request }}</div>
                 {% endif %}
+                <div class="error-text" id="error-motivation_score">{% trans "Motivasyon puanı 1-10 arasında olmalıdır" %}</div>
               </div>
               
               <div class="modern-form-group">
@@ -761,6 +788,88 @@
 document.addEventListener('DOMContentLoaded', function() {
   let currentStep = 1;
   const totalSteps = 4;
+
+  // Validation rules for each field
+  const validationRules = {
+    'gpa': { min: 0, max: 100, required: true },
+    'avg_exam_score': { min: 0, max: 500, required: true },
+    'absent_rate': { min: 0, max: 1, required: true },
+    'daily_study': { min: 0, max: 1440, required: true },
+    'avg_sleep_time': { min: 60, max: 1440, required: true },
+    'daily_social_media': { min: 0, max: 1440, required: true },
+    'anxiety_score': { min: 1, max: 10, required: true },
+    'motivation_score': { min: 1, max: 10, required: true }
+  };
+
+  // Function to validate a single field
+  function validateField(fieldName, value) {
+    const rule = validationRules[fieldName];
+    if (!rule) return true;
+
+    if (rule.required && (value === '' || value === null || value === undefined)) {
+      return false;
+    }
+
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      return false;
+    }
+
+    return numValue >= rule.min && numValue <= rule.max;
+  }
+
+  // Function to show/hide error for a field
+  function showFieldError(fieldName, show) {
+    const input = document.querySelector(`[name="${fieldName}"]`);
+    const errorElement = document.getElementById(`error-${fieldName}`);
+    
+    if (input && errorElement) {
+      if (show) {
+        input.classList.add('error');
+        errorElement.style.display = 'block';
+      } else {
+        input.classList.remove('error');
+        errorElement.style.display = 'none';
+      }
+    }
+  }
+
+  // Function to validate current step
+  function validateCurrentStep() {
+    let isValid = true;
+    const currentStepElement = document.getElementById(`step${currentStep}`);
+    const inputs = currentStepElement.querySelectorAll('input[type="number"]');
+
+    inputs.forEach(input => {
+      const fieldName = input.getAttribute('name');
+      const value = input.value;
+      const isFieldValid = validateField(fieldName, value);
+      
+      showFieldError(fieldName, !isFieldValid);
+      
+      if (!isFieldValid) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  }
+
+  // Add real-time validation to inputs
+  Object.keys(validationRules).forEach(fieldName => {
+    const input = document.querySelector(`[name="${fieldName}"]`);
+    if (input) {
+      input.addEventListener('input', function() {
+        const isValid = validateField(fieldName, this.value);
+        showFieldError(fieldName, !isValid);
+      });
+
+      input.addEventListener('blur', function() {
+        const isValid = validateField(fieldName, this.value);
+        showFieldError(fieldName, !isValid);
+      });
+    }
+  });
   
   // Make form inputs modern
   const inputs = document.querySelectorAll('input[type="number"], input[type="text"], select');
@@ -822,9 +931,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Navigation event listeners
   document.getElementById('nextBtn').addEventListener('click', function() {
-    if (currentStep < totalSteps) {
+    if (validateCurrentStep() && currentStep < totalSteps) {
       currentStep++;
       showStep(currentStep);
+    } else if (!validateCurrentStep()) {
+      // Show a general error message
+      const currentStepElement = document.getElementById(`step${currentStep}`);
+      let existingAlert = currentStepElement.querySelector('.validation-alert');
+      
+      if (!existingAlert) {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger validation-alert mt-3';
+        alert.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Lütfen tüm alanları doğru şekilde doldurun ve belirtilen aralıklara uyun.';
+        currentStepElement.appendChild(alert);
+        
+        // Auto-hide alert after 5 seconds
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+          }
+        }, 5000);
+      }
     }
   });
 
@@ -836,7 +963,32 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Form submission
-  document.getElementById('predictionForm').addEventListener('submit', function() {
+  document.getElementById('predictionForm').addEventListener('submit', function(e) {
+    // Validate all steps before submission
+    let allValid = true;
+    for (let step = 1; step <= totalSteps; step++) {
+      const stepElement = document.getElementById(`step${step}`);
+      const inputs = stepElement.querySelectorAll('input[type="number"]');
+      
+      inputs.forEach(input => {
+        const fieldName = input.getAttribute('name');
+        const value = input.value;
+        const isFieldValid = validateField(fieldName, value);
+        
+        showFieldError(fieldName, !isFieldValid);
+        
+        if (!isFieldValid) {
+          allValid = false;
+        }
+      });
+    }
+
+    if (!allValid) {
+      e.preventDefault();
+      alert('Lütfen tüm alanları doğru şekilde doldurun ve belirtilen aralıklara uyun.');
+      return false;
+    }
+
     document.getElementById('loadingOverlay').style.display = 'flex';
   });
 
