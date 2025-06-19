@@ -159,7 +159,7 @@ def create_model(request):
         else:
             messages.error(request, f"Model oluşturulurken hata oluştu: {result.get('error', 'Bilinmeyen hata')}")
         
-        return redirect('home')
+        return redirect('predictor:home')
     
     return HttpResponse("Bu sayfa sadece GET isteklerini kabul eder", status=405)
 
@@ -172,7 +172,7 @@ def create_sample_model_view(request):
         else:
             messages.error(request, f"Örnek model oluşturulurken hata oluştu: {result.get('error', 'Bilinmeyen hata')}")
         
-        return redirect('home')
+        return redirect('predictor:home')
     
     return HttpResponse("Bu sayfa sadece GET isteklerini kabul eder", status=405)
 
@@ -189,4 +189,4 @@ def set_language(request):
         response = redirect(next_url)
         return response
     
-    return redirect('home')
+    return redirect('predictor:home')

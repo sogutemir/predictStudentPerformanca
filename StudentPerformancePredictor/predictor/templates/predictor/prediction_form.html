@@ -883,11 +883,12 @@
           </div>
         </div>
         
-        <div class="text-center mt-4">
-          <button type="button" class="btn-modern btn-primary-modern" id="newPredictionBtn">
-            {% trans "🔄 Yeni Tahmin Yap" %}
-          </button>
-        </div>
+                  <div class="text-center mt-4">
+            <button type="button" class="btn-modern btn-primary-modern" id="newPredictionBtn" 
+                    onclick="window.location.href='/tahmin/'; return false;">
+              {% trans "🔄 Yeni Tahmin Yap" %}
+            </button>
+          </div>
         {% endif %}
       </div>
       {% endif %}
@@ -1129,8 +1130,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const newPredictionBtn = document.getElementById('newPredictionBtn');
     if (newPredictionBtn) {
       newPredictionBtn.addEventListener('click', function() {
-        // Reload the page to start fresh
-        window.location.href = window.location.pathname;
+        // Clear cache and force hard reload
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.href = '/tahmin/';
+        window.location.reload(true);
       });
     }
   }

@@ -377,7 +377,7 @@
     <!-- Modern Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
+            <a class="navbar-brand" href="{% url 'predictor:home' %}">
                 <i class="bi bi-mortarboard-fill"></i>
                 {% trans "Öğrenci Performans Tahmincisi" %}
             </a>
@@ -391,12 +391,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">
+                        <a class="nav-link" href="{% url 'predictor:home' %}">
                             <i class="bi bi-house me-1"></i>{% trans "Ana Sayfa" %}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'prediction_form' %}">
+                        <a class="nav-link" href="{% url 'predictor:prediction_form' %}">
                             <i class="bi bi-graph-up me-1"></i>{% trans "Performans Tahmini" %}
                         </a>
                     </li>
