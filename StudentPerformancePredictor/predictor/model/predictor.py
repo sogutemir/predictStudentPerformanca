@@ -39,11 +39,8 @@ def predict_performance(input_data):
         if model is None:
             return {"error": "Model yüklenemedi. Lütfen önce model oluşturun.", "success": False}
         
-        if float(input_data.get('daily_social_media', 0)) > 90:
-            excess_social_media_minutes = float(input_data.get('daily_social_media', 0)) - 90
-            social_media_penalty = excess_social_media_minutes * -0.15
-        else:
-            social_media_penalty = 0
+        # Sosyal medya her zaman negatif etki - ek ceza yok
+        social_media_penalty = 0
         
         features = prepare_features(input_data)
         
@@ -186,18 +183,18 @@ def create_sample_model(model_path=None):
         
         # Güncellenmiş katsayılarla model oluştur
         y = (
-            0.0374 * gpa +                     # GPA pozitif etki + %25 artış
+            0.354 * gpa +                     # GPA pozitif etki + %25 artış
             0.8377 * avg_exam_score + 
             -8.6282 * absent_rate + 
             0.1500 * daily_study + 
-            -1.6082 * anxiety_score + 
+            -1.9082 * anxiety_score + 
             3.4378 * motivation_score +
-            0.0396 * avg_sleep_time +
+            0.0596 * avg_sleep_time +
             -0.1500 * daily_social_media +     # Sosyal medya negatif etkisi güçlendirildi
-            7.8000 * cram_school +
+            6.8000 * cram_school +
             6.5731 * private_lesson +
             -2.1106 * private_room +
-            1.6720 * study_resources +
+            1.3720 * study_resources +
             -2.4629 * parent_edu_p +
             -1.0072 * parent_edu_m +
             1.5278 * parent_edu_h +
