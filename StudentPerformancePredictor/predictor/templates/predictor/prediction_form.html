@@ -22,6 +22,17 @@
     min-height: 100vh;
   }
 
+  /* Hide form when prediction result exists */
+  {% if prediction_result %}
+  #formContainer {
+    display: none !important;
+  }
+  
+  #predictionResultContainer {
+    animation: slideInDown 0.6s ease-out;
+  }
+  {% endif %}
+
   .modern-container {
     backdrop-filter: blur(20px);
     background: var(--glass-bg);
@@ -543,6 +554,10 @@
 
   .form-hidden {
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
   }
 
   .result-mode {
@@ -1091,30 +1106,34 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Hide form if prediction result exists and show only result
-  {% if prediction_result %}
-  const formContainer = document.getElementById('formContainer');
-  const resultContainer = document.getElementById('predictionResultContainer');
+  const predictionExists = {% if prediction_result %}true{% else %}false{% endif %};
   
-  if (formContainer && resultContainer) {
-    formContainer.classList.add('form-hidden');
-    resultContainer.classList.add('result-mode');
+  if (predictionExists) {
+    const formContainer = document.getElementById('formContainer');
+    const resultContainer = document.getElementById('predictionResultContainer');
     
-    // Scroll to top smoothly
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    if (formContainer && resultContainer) {
+      formContainer.classList.add('form-hidden');
+      resultContainer.classList.add('result-mode');
+      
+      // Scroll to top smoothly
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+    
+    // New prediction button functionality
+    const newPredictionBtn = document.getElementById('newPredictionBtn');
+    if (newPredictionBtn) {
+      newPredictionBtn.addEventListener('click', function() {
+        // Reload the page to start fresh
+        window.location.href = window.location.pathname;
+      });
+    }
   }
-  
-  // New prediction button functionality
-  const newPredictionBtn = document.getElementById('newPredictionBtn');
-  if (newPredictionBtn) {
-    newPredictionBtn.addEventListener('click', function() {
-      // Reload the page to start fresh
-      window.location.href = window.location.pathname;
-    });
-  }
-  {% endif %}
 
   // Gauge animation
   const gaugeNeedle = document.getElementById('gaugeNeedle');
