@@ -312,78 +312,114 @@
 
   .score-gauge {
     position: relative;
-    width: 250px;
-    height: 125px;
+    width: 280px;
+    height: 180px;
     margin: 2rem auto;
   }
 
   .gauge-body {
     position: absolute;
     width: 100%;
-    height: 100%;
-    border-top-left-radius: 125px;
-    border-top-right-radius: 125px;
-    background: linear-gradient(to right, #ff4081, #ffeb3b, #4caf50);
+    height: 140px;
+    border-top-left-radius: 140px;
+    border-top-right-radius: 140px;
+    background: conic-gradient(from 180deg, #ff4757 0deg, #ff6b35 45deg, #ffa502 90deg, #2ed573 135deg, #1dd1a1 180deg);
     overflow: hidden;
-  }
-
-  .gauge-fill {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 0%;
-    background: rgba(255, 255, 255, 0.8);
-    transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 4px solid #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
   .gauge-cover {
     position: absolute;
-    width: 80%;
-    height: 80%;
-    background: white;
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
+    width: 75%;
+    height: 75%;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-top-left-radius: 105px;
+    border-top-right-radius: 105px;
     bottom: 0;
-    left: 10%;
+    left: 12.5%;
     z-index: 1;
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 3px 15px rgba(0, 0, 0, 0.1);
   }
 
   .gauge-value {
     position: absolute;
     width: 100%;
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 2.8rem;
+    font-weight: 900;
     text-align: center;
-    color: #333;
-    bottom: 10px;
-    z-index: 2;
+    color: #2c3e50;
+    bottom: 45px;
+    z-index: 10;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     animation: pulse 2s infinite;
   }
 
   .gauge-needle {
     position: absolute;
-    width: 2px;
-    height: 60%;
-    background: #333;
+    width: 3px;
+    height: 45%;
+    background: linear-gradient(to top, #e74c3c, #c0392b);
     left: 50%;
     bottom: 0;
     transform-origin: bottom center;
-    transform: translateX(-50%) rotate(0deg);
-    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 3;
+    transform: translateX(-50%) rotate(-90deg);
+    transition: transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.5);
   }
 
   .gauge-center {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #333;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #e74c3c, #c0392b);
     border-radius: 50%;
     left: 50%;
-    bottom: -6px;
+    bottom: -8px;
     transform: translateX(-50%);
-    z-index: 4;
+    z-index: 5;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .gauge-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .gauge-label {
+    position: absolute;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #34495e;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  }
+
+  .gauge-label.min {
+    bottom: 8px;
+    left: 15px;
+  }
+
+  .gauge-label.mid {
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gauge-label.max {
+    bottom: 8px;
+    right: 15px;
+  }
+
+  .gauge-info {
+    text-align: center;
+    margin-top: 1rem;
+    color: #7f8c8d;
+    font-size: 0.9rem;
   }
 
   .section-title {
@@ -739,15 +775,23 @@
           <h3>{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
           
           <div class="score-gauge">
-            <div class="gauge-body">
-              <div id="gauge-fill" class="gauge-fill"></div>
-            </div>
+            <div class="gauge-body"></div>
             <div class="gauge-cover"></div>
+            <div class="gauge-labels">
+              <div class="gauge-label min">0</div>
+              <div class="gauge-label mid">250</div>
+              <div class="gauge-label max">500</div>
+            </div>
             <div class="gauge-needle" id="gaugeNeedle"></div>
             <div class="gauge-center"></div>
             <div class="gauge-value">
               {{ prediction_result.predicted_score }}
             </div>
+          </div>
+          
+          <div class="gauge-info">
+            <strong>{% trans "Maksimum Puan:" %} 500</strong><br>
+            <span>{% trans "Bu puan, girilen verilere dayanarak yapılan bir tahmindir ve gerçek sonuçlar farklılık gösterebilir." %}</span>
           </div>
           
           <div class="alert alert-info">
@@ -993,19 +1037,18 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Gauge animation
-  const gaugeElement = document.getElementById('gauge-fill');
   const gaugeNeedle = document.getElementById('gaugeNeedle');
-  if (gaugeElement && gaugeNeedle) {
+  if (gaugeNeedle) {
     const score = {{ prediction_result.predicted_score|default:0 }};
     const maxScore = 500;
-    const fillPercentage = (score / maxScore) * 100;
-    const safeFillPercentage = Math.min(100, Math.max(0, fillPercentage));
-    const needleRotation = (safeFillPercentage / 100) * 180;
+    const scorePercentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
+    // İbre -90deg'den (en sol) +90deg'ye (en sağ) hareket eder
+    // scorePercentage 0-100 arası olduğu için 180 derece üzerinden hesaplıyoruz
+    const needleRotation = -90 + (scorePercentage / 100) * 180;
 
     setTimeout(() => {
-      gaugeElement.style.height = (100 - safeFillPercentage) + '%';
-      gaugeNeedle.style.transform = `translateX(-50%) rotate(${needleRotation - 90}deg)`;
-    }, 500);
+      gaugeNeedle.style.transform = `translateX(-50%) rotate(${needleRotation}deg)`;
+    }, 800);
   }
 });
 </script>
