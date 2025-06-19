@@ -7,488 +7,1152 @@
 
 {% block extra_css %}
 <style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    --danger-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --shadow-light: rgba(31, 38, 135, 0.37);
+  }
+
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+
+  /* Hide form when prediction result exists */
+  {% if prediction_result %}
+  #formContainer {
+    display: none !important;
+  }
+  
+  #predictionResultContainer {
+    animation: slideInDown 0.6s ease-out;
+  }
+  {% endif %}
+
+  .modern-container {
+    backdrop-filter: blur(20px);
+    background: var(--glass-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px var(--shadow-light);
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .form-step {
+    display: none;
+    animation: slideInRight 0.5s ease-out;
+  }
+
+  .form-step.active {
+    display: block;
+  }
+
+  .step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .step.active {
+    background: var(--success-gradient);
+    transform: scale(1.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .step.completed {
+    background: var(--success-gradient);
+  }
+
+  .step-connector {
+    width: 50px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    align-self: center;
+    transition: all 0.3s ease;
+  }
+
+  .step-connector.completed {
+    background: var(--success-gradient);
+  }
+
+  .modern-form-group {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .floating-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 0.5rem;
+    color: #666;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    border-radius: 4px;
+  }
+
+  .modern-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .modern-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .modern-input:focus + .floating-label,
+  .modern-input:not(:placeholder-shown) + .floating-label {
+    top: 0;
+    font-size: 0.85rem;
+    color: #667eea;
+    font-weight: 600;
+  }
+
+  .modern-select {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+  }
+
+  .modern-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+  }
+
+  .help-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+  }
+
+  .error-text {
+    font-size: 0.85rem;
+    color: #ff4757;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    font-weight: 600;
+    display: none;
+  }
+
+  .modern-input.error {
+    border-color: #ff4757;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+  }
+
+  .modern-select.error {
+    border-color: #ff4757;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+
+  .btn-modern {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-modern:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-modern:hover:before {
+    left: 100%;
+  }
+
+  .btn-primary-modern {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-primary-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  }
+
+  .btn-secondary-modern {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-secondary-modern:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--success-gradient);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  .progress-bar:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, .2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, .2) 50%,
+      rgba(255, 255, 255, .2) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 50px 50px;
+    animation: move 2s linear infinite;
+  }
+
+  @keyframes move {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .prediction-result {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .score-gauge {
     position: relative;
-    width: 300px;
-    height: 150px;
-    margin: 0 auto;
+    width: 280px;
+    height: 180px;
+    margin: 2rem auto;
   }
 
   .gauge-body {
     position: absolute;
     width: 100%;
-    height: 100%;
-    border-top-left-radius: 150px;
-    border-top-right-radius: 150px;
-    background-color: #f3f3f3;
+    height: 140px;
+    border-top-left-radius: 140px;
+    border-top-right-radius: 140px;
+    background: conic-gradient(from 180deg, #ff4757 0deg, #ff6b35 45deg, #ffa502 90deg, #2ed573 135deg, #1dd1a1 180deg);
     overflow: hidden;
-  }
-
-  .gauge-fill {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 0%;
-    background: linear-gradient(to top, #ff4081, #2196f3);
-    transition: height 1s ease-out;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
   .gauge-cover {
     position: absolute;
     width: 75%;
     height: 75%;
-    background-color: white;
-    border-top-left-radius: 113px;
-    border-top-right-radius: 113px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-top-left-radius: 105px;
+    border-top-right-radius: 105px;
     bottom: 0;
     left: 12.5%;
     z-index: 1;
+    box-shadow: inset 0 3px 15px rgba(0, 0, 0, 0.1);
   }
 
   .gauge-value {
     position: absolute;
     width: 100%;
-    font-size: 40px;
-    font-weight: bold;
+    font-size: 2.8rem;
+    font-weight: 900;
     text-align: center;
-    color: #333;
-    bottom: 5px;
-    z-index: 2;
+    color: #2c3e50;
+    bottom: 45px;
+    z-index: 10;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: pulse 2s infinite;
   }
 
-  .score-ranges {
+  .gauge-needle {
+    position: absolute;
+    width: 3px;
+    height: 45%;
+    background: linear-gradient(to top, #e74c3c, #c0392b);
+    left: 50%;
+    bottom: 0;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(-90deg);
+    transition: transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.5);
+  }
+
+  .gauge-center {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #e74c3c, #c0392b);
+    border-radius: 50%;
+    left: 50%;
+    bottom: -8px;
+    transform: translateX(-50%);
+    z-index: 5;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .gauge-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .gauge-label {
+    position: absolute;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #34495e;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  }
+
+  .gauge-label.min {
+    bottom: 8px;
+    left: 15px;
+  }
+
+  .gauge-label.mid {
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gauge-label.max {
+    bottom: 8px;
+    right: 15px;
+  }
+
+  .gauge-info {
+    text-align: center;
+    margin-top: 1rem;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .modern-checkbox {
+    position: relative;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .modern-checkbox:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .modern-checkbox.selected {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .data-summary {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .data-summary h5 {
+    color: #2c3e50 !important;
+    font-weight: 700;
+    margin-bottom: 1.5rem !important;
+    text-align: center;
+    font-size: 1.2rem;
+    text-shadow: none;
+  }
+
+  .data-item {
     display: flex;
     justify-content: space-between;
-    margin-top: 5px;
-    width: 300px;
-    margin: 5px auto;
-  }
-
-  .score-range {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .prediction-card {
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(52, 73, 94, 0.1);
+    color: #34495e;
+    font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .prediction-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  .data-item:hover {
+    background: rgba(102, 126, 234, 0.05);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 8px;
   }
 
-  .form-help-text {
-    color: #6c757d;
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
+  .data-item:last-child {
+    border-bottom: none;
+  }
+
+  .data-value {
+    font-weight: 700;
+    color: #e74c3c;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .form-hidden {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .result-mode {
+    animation: slideInDown 0.6s ease-out;
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .modern-container {
+      margin: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .input-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .checkbox-group {
+      grid-template-columns: 1fr;
+    }
+    
+    .nav-buttons {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .nav-buttons > div {
+      width: 100%;
+    }
+    
+    .btn-modern {
+      width: 100%;
+    }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-md-8 offset-md-2">
-    {% if messages %} {% for message in messages %}
-    <div
-      class="alert alert-{{ message.tags }} alert-dismissible fade show"
-      role="alert"
-    >
-      {{ message }}
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="alert"
-        aria-label="Close"
-      ></button>
-    </div>
-    {% endfor %} {% endif %}
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
 
-    <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">{% trans "Öğrenci Performans Tahmini" %}</h4>
-      </div>
-      <div class="card-body">
-        <form method="post">
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show modern-container" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="modern-container" id="formContainer">
+        <div class="text-center mb-4">
+          <h1 class="section-title">{% trans "Akıllı Öğrenci Performans Analizi" %}</h1>
+          <p class="text-white-50">{% trans "Gelecekteki akademik başarınızı tahmin edelim" %}</p>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar" style="width: 25%"></div>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step active" data-step="1">1</div>
+          <div class="step-connector"></div>
+          <div class="step" data-step="2">2</div>
+          <div class="step-connector"></div>
+          <div class="step" data-step="3">3</div>
+          <div class="step-connector"></div>
+          <div class="step" data-step="4">4</div>
+        </div>
+
+        <form method="post" id="predictionForm">
           {% csrf_token %}
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="{{ form.gpa.id_for_label }}" class="form-label">
-                {{ form.gpa|translate_field_label:request }}
-              </label>
-              {{ form.gpa }} {% if form.gpa.help_text %}
-              <div class="form-help-text">
-                {{ form.gpa|translate_field_help_text:request }}
+          <!-- Step 1: Academic Info -->
+          <div class="form-step active" id="step1">
+            <h3 class="section-title">{% trans "Akademik Bilgiler" %}</h3>
+            <div class="input-grid">
+              <div class="modern-form-group">
+                {{ form.gpa }}
+                <label class="floating-label" for="{{ form.gpa.id_for_label }}">
+                  {{ form.gpa|translate_field_label:request }}
+                </label>
+                {% if form.gpa.help_text %}
+                <div class="help-text">{{ form.gpa|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-gpa">{% trans "GPA 0-100 arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.avg_exam_score.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.avg_exam_score|translate_field_label:request }}
-              </label>
-              {{ form.avg_exam_score }} {% if form.avg_exam_score.help_text %}
-              <div class="form-help-text">
-                {{ form.avg_exam_score|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                {{ form.avg_exam_score }}
+                <label class="floating-label" for="{{ form.avg_exam_score.id_for_label }}">
+                  {{ form.avg_exam_score|translate_field_label:request }}
+                </label>
+                {% if form.avg_exam_score.help_text %}
+                <div class="help-text">{{ form.avg_exam_score|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-avg_exam_score">{% trans "Sınav puanı 0-500 arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.absent_rate.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.absent_rate|translate_field_label:request }}
-              </label>
-              {{ form.absent_rate }} {% if form.absent_rate.help_text %}
-              <div class="form-help-text">
-                {{ form.absent_rate|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                {{ form.absent_rate }}
+                <label class="floating-label" for="{{ form.absent_rate.id_for_label }}">
+                  {{ form.absent_rate|translate_field_label:request }}
+                </label>
+                {% if form.absent_rate.help_text %}
+                <div class="help-text">{{ form.absent_rate|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-absent_rate">{% trans "Devamsızlık oranı 0-1 arasında olmalıdır (örn: 0.1 = %10)" %}</div>
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.daily_study.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.daily_study|translate_field_label:request }}
-              </label>
-              {{ form.daily_study }} {% if form.daily_study.help_text %}
-              <div class="form-help-text">
-                {{ form.daily_study|translate_field_help_text:request }}
-              </div>
-              {% endif %}
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.avg_sleep_time.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.avg_sleep_time|translate_field_label:request }}
-              </label>
-              {{ form.avg_sleep_time }} {% if form.avg_sleep_time.help_text %}
-              <div class="form-help-text">
-                {{ form.avg_sleep_time|translate_field_help_text:request }}
+          <!-- Step 2: Study Habits -->
+          <div class="form-step" id="step2">
+            <h3 class="section-title">{% trans "Çalışma Alışkanlıkları" %}</h3>
+            <div class="input-grid">
+              <div class="modern-form-group">
+                {{ form.daily_study }}
+                <label class="floating-label" for="{{ form.daily_study.id_for_label }}">
+                  {{ form.daily_study|translate_field_label:request }}
+                </label>
+                {% if form.daily_study.help_text %}
+                <div class="help-text">{{ form.daily_study|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-daily_study">{% trans "Günlük çalışma süresi 0-1440 dakika arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.daily_social_media.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.daily_social_media|translate_field_label:request }}
-              </label>
-              {{ form.daily_social_media }} {% if form.daily_social_media.help_text %}
-              <div class="form-help-text">
-                {{ form.daily_social_media|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                {{ form.avg_sleep_time }}
+                <label class="floating-label" for="{{ form.avg_sleep_time.id_for_label }}">
+                  {{ form.avg_sleep_time|translate_field_label:request }}
+                </label>
+                {% if form.avg_sleep_time.help_text %}
+                <div class="help-text">{{ form.avg_sleep_time|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-avg_sleep_time">{% trans "Uyku süresi 60-1440 dakika arasında olmalıdır (1-24 saat)" %}</div>
               </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.anxiety_score.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.anxiety_score|translate_field_label:request }}
-              </label>
-              {{ form.anxiety_score }} {% if form.anxiety_score.help_text %}
-              <div class="form-help-text">
-                {{ form.anxiety_score|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                {{ form.daily_social_media }}
+                <label class="floating-label" for="{{ form.daily_social_media.id_for_label }}">
+                  {{ form.daily_social_media|translate_field_label:request }}
+                </label>
+                {% if form.daily_social_media.help_text %}
+                <div class="help-text">{{ form.daily_social_media|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-daily_social_media">{% trans "Sosyal medya kullanımı 0-1440 dakika arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.motivation_score.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.motivation_score|translate_field_label:request }}
-              </label>
-              {{ form.motivation_score }} {% if form.motivation_score.help_text %}
-              <div class="form-help-text">
-                {{ form.motivation_score|translate_field_help_text:request }}
-              </div>
-              {% endif %}
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.parent_edu.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.parent_edu|translate_field_label:request }}
-              </label>
-              {{ form.parent_edu }} {% if form.parent_edu.help_text %}
-              <div class="form-help-text">
-                {{ form.parent_edu|translate_field_help_text:request }}
+          <!-- Step 3: Personal Factors -->
+          <div class="form-step" id="step3">
+            <h3 class="section-title">{% trans "Kişisel Faktörler" %}</h3>
+            <div class="input-grid">
+              <div class="modern-form-group">
+                {{ form.anxiety_score }}
+                <label class="floating-label" for="{{ form.anxiety_score.id_for_label }}">
+                  {{ form.anxiety_score|translate_field_label:request }}
+                </label>
+                {% if form.anxiety_score.help_text %}
+                <div class="help-text">{{ form.anxiety_score|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-anxiety_score">{% trans "Kaygı puanı 1-10 arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-6 mb-3">
-              <label
-                for="{{ form.cram_school.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.cram_school|translate_field_label:request }}
-              </label>
-              {{ form.cram_school }} {% if form.cram_school.help_text %}
-              <div class="form-help-text">
-                {{ form.cram_school|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                {{ form.motivation_score }}
+                <label class="floating-label" for="{{ form.motivation_score.id_for_label }}">
+                  {{ form.motivation_score|translate_field_label:request }}
+                </label>
+                {% if form.motivation_score.help_text %}
+                <div class="help-text">{{ form.motivation_score|translate_field_help_text:request }}</div>
+                {% endif %}
+                <div class="error-text" id="error-motivation_score">{% trans "Motivasyon puanı 1-10 arasında olmalıdır" %}</div>
               </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label
-                for="{{ form.private_lesson.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.private_lesson|translate_field_label:request }}
-              </label>
-              {{ form.private_lesson }} {% if form.private_lesson.help_text %}
-              <div class="form-help-text">
-                {{ form.private_lesson|translate_field_help_text:request }}
+              
+              <div class="modern-form-group">
+                <label class="floating-label" style="position: static; transform: none; background: transparent; color: white; margin-bottom: 1rem; display: block;">
+                  {{ form.parent_edu|translate_field_label:request }}
+                </label>
+                {{ form.parent_edu }}
+                {% if form.parent_edu.help_text %}
+                <div class="help-text">{{ form.parent_edu|translate_field_help_text:request }}</div>
+                {% endif %}
               </div>
-              {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-              <label
-                for="{{ form.private_room.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.private_room|translate_field_label:request }}
-              </label>
-              {{ form.private_room }} {% if form.private_room.help_text %}
-              <div class="form-help-text">
-                {{ form.private_room|translate_field_help_text:request }}
-              </div>
-              {% endif %}
-            </div>
-            <div class="col-md-4 mb-3">
-              <label
-                for="{{ form.study_resources.id_for_label }}"
-                class="form-label"
-              >
-                {{ form.study_resources|translate_field_label:request }}
-              </label>
-              {{ form.study_resources }} {% if form.study_resources.help_text %}
-              <div class="form-help-text">
-                {{ form.study_resources|translate_field_help_text:request }}
-              </div>
-              {% endif %}
             </div>
           </div>
 
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg mt-3">
-              {% trans "Tahmin Et" %}
-            </button>
+          <!-- Step 4: Resources & Environment -->
+          <div class="form-step" id="step4">
+            <h3 class="section-title">{% trans "Kaynaklar ve Çevre" %}</h3>
+            <div class="checkbox-group">
+              <div class="modern-checkbox" data-field="cram_school">
+                {{ form.cram_school }}
+                <div>
+                  <strong>{{ form.cram_school|translate_field_label:request }}</strong>
+                  {% if form.cram_school.help_text %}
+                  <div class="help-text">{{ form.cram_school|translate_field_help_text:request }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="modern-checkbox" data-field="private_lesson">
+                {{ form.private_lesson }}
+                <div>
+                  <strong>{{ form.private_lesson|translate_field_label:request }}</strong>
+                  {% if form.private_lesson.help_text %}
+                  <div class="help-text">{{ form.private_lesson|translate_field_help_text:request }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="modern-checkbox" data-field="private_room">
+                {{ form.private_room }}
+                <div>
+                  <strong>{{ form.private_room|translate_field_label:request }}</strong>
+                  {% if form.private_room.help_text %}
+                  <div class="help-text">{{ form.private_room|translate_field_help_text:request }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="modern-checkbox" data-field="study_resources">
+                {{ form.study_resources }}
+                <div>
+                  <strong>{{ form.study_resources|translate_field_label:request }}</strong>
+                  {% if form.study_resources.help_text %}
+                  <div class="help-text">{{ form.study_resources|translate_field_help_text:request }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <div>
+              <button type="button" class="btn-modern btn-secondary-modern" id="prevBtn" style="display: none;">
+                {% trans "Önceki" %}
+              </button>
+            </div>
+            <div>
+              <button type="button" class="btn-modern btn-primary-modern" id="nextBtn">
+                {% trans "Sonraki" %}
+              </button>
+              <button type="submit" class="btn-modern btn-primary-modern" id="submitBtn" style="display: none;">
+                {% trans "Tahmin Et" %}
+              </button>
+            </div>
           </div>
         </form>
       </div>
-    </div>
 
-    {% if prediction_result %}
-    <div class="card mt-4 prediction-card">
-      <div
-        class="card-header {% if prediction_result.success %}bg-success{% else %}bg-danger{% endif %} text-white"
-      >
-        <h4 class="mb-0">{% trans "Tahmin Sonucu" %}</h4>
-      </div>
-      <div class="card-body">
+      {% if prediction_result %}
+      <div class="prediction-result" id="predictionResultContainer">
         {% if prediction_result.error %}
         <div class="alert alert-danger">{{ prediction_result.error }}</div>
         {% else %}
         <div class="text-center">
-          <h3>{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
-
+          <div class="mb-4">
+            <h2 class="section-title" style="color: #2c3e50; margin-bottom: 0.5rem;">{% trans "🎯 Analiz Tamamlandı!" %}</h2>
+            <p style="color: #7f8c8d; font-size: 1.1rem;">{% trans "İşte tahmini üniversite sınav puanınız" %}</p>
+          </div>
+          <h3 style="color: #34495e; margin-bottom: 2rem;">{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
+          
           <div class="score-gauge">
-            <div class="gauge-body">
-              <div id="gauge-fill" class="gauge-fill"></div>
-            </div>
+            <div class="gauge-body"></div>
             <div class="gauge-cover"></div>
+            <div class="gauge-labels">
+              <div class="gauge-label min">0</div>
+              <div class="gauge-label mid">250</div>
+              <div class="gauge-label max">500</div>
+            </div>
+            <div class="gauge-needle" id="gaugeNeedle"></div>
+            <div class="gauge-center"></div>
             <div class="gauge-value">
               {{ prediction_result.predicted_score }}
             </div>
           </div>
-          <div class="score-ranges">
-            <span class="score-range">0</span>
-            <span class="score-range">250</span>
-            <span class="score-range">500</span>
+          
+          <div class="gauge-info">
+            <strong>{% trans "Maksimum Puan:" %} 500</strong><br>
+            <span>{% trans "Bu puan, girilen verilere dayanarak yapılan bir tahmindir ve gerçek sonuçlar farklılık gösterebilir." %}</span>
           </div>
-
-          <div class="alert alert-info mt-3">
+          
+          <div class="alert alert-info">
             <i class="bi bi-info-circle"></i>
             {% trans "Bu puan, girilen verilere dayanarak yapılan bir tahmindir ve gerçek sonuçlar farklılık gösterebilir." %}
           </div>
         </div>
 
-        <div class="mt-4">
-          <h5>{% trans "Girilen Veriler:" %}</h5>
-          <ul class="list-group">
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "GPA (Not Ortalaması)" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.gpa }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Ortalama Sınav Puanı" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.avg_exam_score }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Devamsızlık Oranı" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.absent_rate }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Günlük Çalışma Süresi (Dakika)" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.daily_study }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Günlük Uyku Süresi (Dakika)" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.avg_sleep_time }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Günlük Sosyal Medya Kullanımı (Dakika)" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.daily_social_media }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Kaygı Puanı" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.anxiety_score }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Motivasyon Puanı" %}
-              <span class="badge bg-primary rounded-pill"
-                >{{ prediction_result.input_data.motivation_score }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Ebeveyn Eğitim Durumu" %}
-              <span class="badge bg-secondary rounded-pill">
-                {% if prediction_result.input_data.parent_edu == 'p' %} {% trans
-                "İlkokul" %} {% elif prediction_result.input_data.parent_edu ==
-                'm' %} {% trans "Ortaokul" %} {% elif
-                prediction_result.input_data.parent_edu == 'h' %} {% trans
-                "Lise" %} {% elif prediction_result.input_data.parent_edu == 'u'
-                %} {% trans "Üniversite" %} {% endif %}
-              </span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Dershaneye Gidiyor mu?" %}
-              <span
-                class="badge {% if prediction_result.input_data.cram_school == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
-              >
-                {% if prediction_result.input_data.cram_school == 'yes' %} {%
-                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
-              </span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Özel Ders Alıyor mu?" %}
-              <span
-                class="badge {% if prediction_result.input_data.private_lesson == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
-              >
-                {% if prediction_result.input_data.private_lesson == 'yes' %} {%
-                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
-              </span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Kendine Ait Odası Var mı?" %}
-              <span
-                class="badge {% if prediction_result.input_data.private_room == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
-              >
-                {% if prediction_result.input_data.private_room == 'yes' %} {%
-                trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
-              </span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              {% trans "Yeterli Çalışma Kaynakları Var mı?" %}
-              <span
-                class="badge {% if prediction_result.input_data.study_resources == 'yes' %}bg-success{% else %}bg-danger{% endif %} rounded-pill"
-              >
-                {% if prediction_result.input_data.study_resources == 'yes' %}
-                {% trans "Evet" %} {% else %} {% trans "Hayır" %} {% endif %}
-              </span>
-            </li>
-          </ul>
+        <div class="data-summary">
+          <h5>{% trans "📊 Girilen Veriler" %}</h5>
+          <div class="data-item">
+            <span>{% trans "GPA (Not Ortalaması)" %}</span>
+            <span class="data-value">{{ prediction_result.input_data.gpa }}</span>
+          </div>
+          <div class="data-item">
+            <span>{% trans "Ortalama Sınav Puanı" %}</span>
+            <span class="data-value">{{ prediction_result.input_data.avg_exam_score }}</span>
+          </div>
+          <div class="data-item">
+            <span>{% trans "Devamsızlık Oranı" %}</span>
+            <span class="data-value">{{ prediction_result.input_data.absent_rate }}</span>
+          </div>
+          <div class="data-item">
+            <span>{% trans "Günlük Çalışma Süresi (Dakika)" %}</span>
+            <span class="data-value">{{ prediction_result.input_data.daily_study }}</span>
+          </div>
         </div>
+        
+                  <div class="text-center mt-4">
+            <button type="button" class="btn-modern btn-primary-modern" id="newPredictionBtn" 
+                    onclick="window.location.href='/tahmin/'; return false;">
+              {% trans "🔄 Yeni Tahmin Yap" %}
+            </button>
+          </div>
         {% endif %}
       </div>
+      {% endif %}
     </div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const gaugeElement = document.getElementById('gauge-fill');
-    if (gaugeElement) {
-      const score = {{ prediction_result.predicted_score|default:0 }};
-      const maxScore = 500;
-      const fillPercentage = (score / maxScore) * 100;
-      const safeFillPercentage = Math.min(100, Math.max(0, fillPercentage));
+document.addEventListener('DOMContentLoaded', function() {
+  let currentStep = 1;
+  const totalSteps = 4;
 
-      setTimeout(() => {
-        gaugeElement.style.height = safeFillPercentage + '%';
-      }, 200);
+  // Validation rules for each field
+  const validationRules = {
+    'gpa': { min: 0, max: 100, required: true },
+    'avg_exam_score': { min: 0, max: 500, required: true },
+    'absent_rate': { min: 0, max: 1, required: true },
+    'daily_study': { min: 0, max: 1440, required: true },
+    'avg_sleep_time': { min: 60, max: 1440, required: true },
+    'daily_social_media': { min: 0, max: 1440, required: true },
+    'anxiety_score': { min: 1, max: 10, required: true },
+    'motivation_score': { min: 1, max: 10, required: true }
+  };
+
+  // Function to validate a single field
+  function validateField(fieldName, value) {
+    const rule = validationRules[fieldName];
+    if (!rule) return true;
+
+    if (rule.required && (value === '' || value === null || value === undefined)) {
+      return false;
+    }
+
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      return false;
+    }
+
+    return numValue >= rule.min && numValue <= rule.max;
+  }
+
+  // Function to show/hide error for a field
+  function showFieldError(fieldName, show) {
+    const input = document.querySelector(`[name="${fieldName}"]`);
+    const errorElement = document.getElementById(`error-${fieldName}`);
+    
+    if (input && errorElement) {
+      if (show) {
+        input.classList.add('error');
+        errorElement.style.display = 'block';
+      } else {
+        input.classList.remove('error');
+        errorElement.style.display = 'none';
+      }
+    }
+  }
+
+  // Function to validate current step
+  function validateCurrentStep() {
+    let isValid = true;
+    const currentStepElement = document.getElementById(`step${currentStep}`);
+    const inputs = currentStepElement.querySelectorAll('input[type="number"]');
+
+    inputs.forEach(input => {
+      const fieldName = input.getAttribute('name');
+      const value = input.value;
+      const isFieldValid = validateField(fieldName, value);
+      
+      showFieldError(fieldName, !isFieldValid);
+      
+      if (!isFieldValid) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  }
+
+  // Add real-time validation to inputs
+  Object.keys(validationRules).forEach(fieldName => {
+    const input = document.querySelector(`[name="${fieldName}"]`);
+    if (input) {
+      input.addEventListener('input', function() {
+        const isValid = validateField(fieldName, this.value);
+        showFieldError(fieldName, !isValid);
+      });
+
+      input.addEventListener('blur', function() {
+        const isValid = validateField(fieldName, this.value);
+        showFieldError(fieldName, !isValid);
+      });
     }
   });
+  
+  // Make form inputs modern
+  const inputs = document.querySelectorAll('input[type="number"], input[type="text"], select');
+  inputs.forEach(input => {
+    if (input.tagName === 'SELECT') {
+      input.classList.add('modern-select');
+    } else {
+      input.classList.add('modern-input');
+      input.placeholder = ' ';
+    }
+  });
+
+  // Hide original select fields and replace with modern checkboxes for yes/no fields
+  const yesNoFields = ['cram_school', 'private_lesson', 'private_room', 'study_resources'];
+  yesNoFields.forEach(fieldName => {
+    const select = document.querySelector(`select[name="${fieldName}"]`);
+    const checkbox = document.querySelector(`.modern-checkbox[data-field="${fieldName}"]`);
+    
+    if (select && checkbox) {
+      select.style.display = 'none';
+      
+      checkbox.addEventListener('click', function() {
+        const isSelected = this.classList.contains('selected');
+        this.classList.toggle('selected');
+        select.value = isSelected ? 'no' : 'yes';
+      });
+    }
+  });
+
+  // Navigation functions
+  function showStep(step) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${step}`).classList.add('active');
+    
+    // Update step indicators
+    document.querySelectorAll('.step').forEach((s, index) => {
+      s.classList.remove('active', 'completed');
+      if (index + 1 < step) {
+        s.classList.add('completed');
+      } else if (index + 1 === step) {
+        s.classList.add('active');
+      }
+    });
+    
+    // Update connectors
+    document.querySelectorAll('.step-connector').forEach((c, index) => {
+      c.classList.toggle('completed', index + 1 < step);
+    });
+    
+    // Update progress bar
+    const progress = (step / totalSteps) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // Update buttons
+    document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+    document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline-block';
+    document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline-block' : 'none';
+  }
+
+  // Navigation event listeners
+  document.getElementById('nextBtn').addEventListener('click', function() {
+    if (validateCurrentStep() && currentStep < totalSteps) {
+      currentStep++;
+      showStep(currentStep);
+    } else if (!validateCurrentStep()) {
+      // Show a general error message
+      const currentStepElement = document.getElementById(`step${currentStep}`);
+      let existingAlert = currentStepElement.querySelector('.validation-alert');
+      
+      if (!existingAlert) {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger validation-alert mt-3';
+        alert.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Lütfen tüm alanları doğru şekilde doldurun ve belirtilen aralıklara uyun.';
+        currentStepElement.appendChild(alert);
+        
+        // Auto-hide alert after 5 seconds
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+          }
+        }, 5000);
+      }
+    }
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', function() {
+    if (currentStep > 1) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+
+  // Form submission
+  document.getElementById('predictionForm').addEventListener('submit', function(e) {
+    // Validate all steps before submission
+    let allValid = true;
+    for (let step = 1; step <= totalSteps; step++) {
+      const stepElement = document.getElementById(`step${step}`);
+      const inputs = stepElement.querySelectorAll('input[type="number"]');
+      
+      inputs.forEach(input => {
+        const fieldName = input.getAttribute('name');
+        const value = input.value;
+        const isFieldValid = validateField(fieldName, value);
+        
+        showFieldError(fieldName, !isFieldValid);
+        
+        if (!isFieldValid) {
+          allValid = false;
+        }
+      });
+    }
+
+    if (!allValid) {
+      e.preventDefault();
+      alert('Lütfen tüm alanları doğru şekilde doldurun ve belirtilen aralıklara uyun.');
+      return false;
+    }
+
+    document.getElementById('loadingOverlay').style.display = 'flex';
+  });
+
+  // Hide form if prediction result exists and show only result
+  const predictionExists = {% if prediction_result %}true{% else %}false{% endif %};
+  
+  if (predictionExists) {
+    const formContainer = document.getElementById('formContainer');
+    const resultContainer = document.getElementById('predictionResultContainer');
+    
+    if (formContainer && resultContainer) {
+      formContainer.classList.add('form-hidden');
+      resultContainer.classList.add('result-mode');
+      
+      // Scroll to top smoothly
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+    
+    // New prediction button functionality
+    const newPredictionBtn = document.getElementById('newPredictionBtn');
+    if (newPredictionBtn) {
+      newPredictionBtn.addEventListener('click', function() {
+        // Clear cache and force hard reload
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.href = '/tahmin/';
+        window.location.reload(true);
+      });
+    }
+  }
+
+  // Gauge animation
+  const gaugeNeedle = document.getElementById('gaugeNeedle');
+  if (gaugeNeedle) {
+    const score = {{ prediction_result.predicted_score|default:0 }};
+    const maxScore = 500;
+    const scorePercentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
+    // İbre -90deg'den (en sol) +90deg'ye (en sağ) hareket eder
+    // scorePercentage 0-100 arası olduğu için 180 derece üzerinden hesaplıyoruz
+    const needleRotation = -90 + (scorePercentage / 100) * 180;
+
+    setTimeout(() => {
+      gaugeNeedle.style.transform = `translateX(-50%) rotate(${needleRotation}deg)`;
+    }, 800);
+  }
+});
 </script>
 {% endblock %}

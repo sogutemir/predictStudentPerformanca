@@ -183,22 +183,22 @@ def create_sample_model(model_path=None):
         ])
         
         y = (
-            -0.0219 * gpa + 
-            0.8377 * avg_exam_score + 
-            -8.6282 * absent_rate + 
-            0.1500 * daily_study + 
-            -1.6082 * anxiety_score + 
-            3.4378 * motivation_score +
-            0.0396 * avg_sleep_time +
-            -0.0500 * daily_social_media +
-            7.8000 * cram_school +
-            6.5731 * private_lesson +
-            -2.1106 * private_room +
-            1.6720 * study_resources +
-            -2.4629 * parent_edu_p +
-            -1.0072 * parent_edu_m +
-            1.5278 * parent_edu_h +
-            1.9423 * parent_edu_u +
+            4.021875 * gpa + 
+            3.837749 * avg_exam_score + 
+            -8.628218 * absent_rate + 
+            5.029935 * daily_study + 
+            -3.608183 * anxiety_score + 
+            3.437800 * motivation_score +
+            0.039636 * avg_sleep_time +
+            -3.424030 * daily_social_media +
+            3.800000 * cram_school +
+            4.573110 * private_lesson +
+            -2.110611 * private_room +
+            1.671973 * study_resources +
+            -2.462897 * parent_edu_p +
+            -1.007241 * parent_edu_m +
+            1.527813 * parent_edu_h +
+            1.942325 * parent_edu_u +
             np.random.normal(0, 20, n_samples)
         )
         
