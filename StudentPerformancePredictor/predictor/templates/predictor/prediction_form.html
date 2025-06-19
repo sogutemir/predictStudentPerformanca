@@ -180,6 +180,7 @@
               <div class="form-help-text">
                 {{ form.daily_social_media.help_text }}
               </div>
+              {% endif %}
             </div>
           </div>
 
@@ -209,6 +210,7 @@
               <div class="form-help-text">
                 {{ form.motivation_score.help_text }}
               </div>
+              {% endif %}
             </div>
           </div>
 
@@ -396,11 +398,11 @@
             >
               Ebeveyn Eğitim Durumu
               <span class="badge bg-secondary rounded-pill">
-                {% if prediction_result.input_data.parent_edu == 'p' %} İlkokul
-                {% elif prediction_result.input_data.parent_edu == 'm' %}
-                Ortaokul {% elif prediction_result.input_data.parent_edu == 'h'
-                %} Lise {% elif prediction_result.input_data.parent_edu == 'u'
-                %} Üniversite {% endif %}
+                {% if prediction_result.input_data.parent_edu == 'p' %}İlkokul
+                {% elif prediction_result.input_data.parent_edu == 'm'
+                %}Ortaokul {% elif prediction_result.input_data.parent_edu ==
+                'h' %}Lise {% elif prediction_result.input_data.parent_edu ==
+                'u' %}Üniversite {% endif %}
               </span>
             </li>
             <li

@@ -1,5 +1,5 @@
 {% extends 'predictor/base.html' %} {% load translation_tags %} {% block title
-%}{% trans "Ana Sayfa" %} - {% trans "Öğrenci Performans Tahmincisi" %}{%
+%} {% trans "Ana Sayfa" %} - {% trans "Öğrenci Performans Tahmincisi" %} {%
 endblock %} {% block extra_css %}
 <style>
   .feature-icon {
@@ -90,8 +90,9 @@ endblock %} {% block extra_css %}
         class="btn btn-primary btn-lg"
         href="{% url 'prediction_form' %}"
         role="button"
-        >{% trans "Başlayın" %}</a
       >
+        {% trans "Başlayın" %}
+      </a>
     </div>
   </div>
 </div>
@@ -154,7 +155,6 @@ endblock %} {% block extra_css %}
     </div>
   </div>
 </div>
-
 {% endblock %} {% block extra_js %}
 <script>
   // Bootstrap Icons CDN ekle

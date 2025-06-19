@@ -1,5 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
+from django.utils import translation
 
 register = template.Library()
 
@@ -30,20 +31,15 @@ TRANSLATIONS = {
     }
 }
 
-@register.simple_tag(takes_context=True)
-def trans(context, text):
+@register.simple_tag
+def trans(text):
     """Basit çeviri tag'i"""
-    request = context.get('request')
-    if request:
-        language = request.session.get('language', 'tr')
-        if language == 'en' and text in TRANSLATIONS['en']:
-            return mark_safe(TRANSLATIONS['en'][text])
+    current_language = translation.get_language()
+    if current_language == 'en' and text in TRANSLATIONS['en']:
+        return mark_safe(TRANSLATIONS['en'][text])
     return mark_safe(text)
 
-@register.simple_tag(takes_context=True)
-def get_current_language(context):
+@register.simple_tag
+def get_current_language():
     """Mevcut dil kodunu döndürür"""
-    request = context.get('request')
-    if request:
-        return request.session.get('language', 'tr')
-    return 'tr' 
+    return translation.get_language() or 'tr'

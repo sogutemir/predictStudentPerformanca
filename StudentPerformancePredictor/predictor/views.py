@@ -2,17 +2,33 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.utils import translation
 from .forms import PredictionForm
-from .model import predict_performance, create_dummy_model, create_sample_model
 from .models import PredictionHistory
 import json
 import os
 
-# Create your views here.
+# Model fonksiyonlarını doğru şekilde import et
+try:
+    from .model.predictor import predict_performance, create_dummy_model, create_sample_model
+except ImportError as e:
+    print(f"Model import hatası: {e}")
+    # Fallback fonksiyonlar
+    def predict_performance(input_data):
+        return {"error": "Model yüklenemedi", "success": False}
+    
+    def create_dummy_model():
+        return {"error": "Model oluşturulamadı", "success": False}
+    
+    def create_sample_model():
+        return {"error": "Model oluşturulamadı", "success": False}
+
 def home(request):
+    """Ana sayfa view'i"""
     return render(request, 'predictor/home.html')
 
 def prediction_form(request):
+    """Tahmin formu view'i"""
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
@@ -81,6 +97,7 @@ def prediction_form(request):
 
 @csrf_exempt
 def api_predict(request):
+    """API tahmin endpoint'i"""
     if request.method == 'POST':
         try:
             # JSON veya form verisi olarak gönderilen istekleri kabul et
@@ -128,6 +145,7 @@ def api_predict(request):
         return JsonResponse({'error': 'Sadece POST istekleri kabul edilir', 'success': False}, status=405)
 
 def create_model(request):
+    """Model oluşturma view'i"""
     if request.method == 'GET':
         result = create_dummy_model()
         if result.get('success', False):
@@ -140,6 +158,7 @@ def create_model(request):
     return HttpResponse("Bu sayfa sadece GET isteklerini kabul eder", status=405)
 
 def create_sample_model_view(request):
+    """Örnek model oluşturma view'i"""
     if request.method == 'GET':
         result = create_sample_model()
         if result.get('success', False):
@@ -155,10 +174,15 @@ def set_language(request):
     """Dil değiştirme view'i"""
     if request.method == 'POST':
         language = request.POST.get('language', 'tr')
-        request.session['language'] = language
+        
+        # Django'nun standart dil değiştirme mekanizmasını kullan
+        translation.activate(language)
+        request.session['django_language'] = language
         
         # Geri dönülecek sayfa
         next_url = request.POST.get('next', '/')
-        return redirect(next_url)
+        response = redirect(next_url)
+        response.set_cookie('django_language', language)
+        return response
     
     return redirect('home')

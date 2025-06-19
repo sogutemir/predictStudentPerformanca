@@ -1,6 +1,6 @@
-{% load translation_tags %}
+{% load translation_tags %} {% load i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -69,6 +69,7 @@
           </ul>
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
+              {% get_current_language as current_lang %}
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -78,8 +79,7 @@
                 aria-expanded="false"
               >
                 <i class="bi bi-globe me-1"></i>
-                {% get_current_language as CURRENT_LANG %} {% if CURRENT_LANG ==
-                'tr' %} Türkçe {% else %} English {% endif %}
+                {% if current_lang == 'en' %}English{% else %}Türkçe{% endif %}
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"
@@ -101,7 +101,7 @@
                       type="submit"
                       name="language"
                       value="tr"
-                      class="dropdown-item {% if CURRENT_LANG == 'tr' %}active{% endif %}"
+                      class="dropdown-item {% if current_lang == 'tr' %}active{% endif %}"
                     >
                       🇹🇷 Türkçe
                     </button>
@@ -123,7 +123,7 @@
                       type="submit"
                       name="language"
                       value="en"
-                      class="dropdown-item {% if CURRENT_LANG == 'en' %}active{% endif %}"
+                      class="dropdown-item {% if current_lang == 'en' %}active{% endif %}"
                     >
                       🇺🇸 English
                     </button>
