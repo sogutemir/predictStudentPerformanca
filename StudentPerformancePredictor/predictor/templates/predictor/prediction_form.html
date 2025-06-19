@@ -541,6 +541,25 @@
     100% { transform: rotate(360deg); }
   }
 
+  .form-hidden {
+    display: none !important;
+  }
+
+  .result-mode {
+    animation: slideInDown 0.6s ease-out;
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (max-width: 768px) {
     .modern-container {
       margin: 1rem;
@@ -588,7 +607,7 @@
         {% endfor %}
       {% endif %}
 
-      <div class="modern-container">
+      <div class="modern-container" id="formContainer">
         <div class="text-center mb-4">
           <h1 class="section-title">{% trans "Akıllı Öğrenci Performans Analizi" %}</h1>
           <p class="text-white-50">{% trans "Gelecekteki akademik başarınızı tahmin edelim" %}</p>
@@ -792,12 +811,16 @@
       </div>
 
       {% if prediction_result %}
-      <div class="prediction-result">
+      <div class="prediction-result" id="predictionResultContainer">
         {% if prediction_result.error %}
         <div class="alert alert-danger">{{ prediction_result.error }}</div>
         {% else %}
         <div class="text-center">
-          <h3>{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
+          <div class="mb-4">
+            <h2 class="section-title" style="color: #2c3e50; margin-bottom: 0.5rem;">{% trans "🎯 Analiz Tamamlandı!" %}</h2>
+            <p style="color: #7f8c8d; font-size: 1.1rem;">{% trans "İşte tahmini üniversite sınav puanınız" %}</p>
+          </div>
+          <h3 style="color: #34495e; margin-bottom: 2rem;">{% trans "Tahmini Üniversite Sınav Puanı" %}</h3>
           
           <div class="score-gauge">
             <div class="gauge-body"></div>
@@ -843,6 +866,12 @@
             <span>{% trans "Günlük Çalışma Süresi (Dakika)" %}</span>
             <span class="data-value">{{ prediction_result.input_data.daily_study }}</span>
           </div>
+        </div>
+        
+        <div class="text-center mt-4">
+          <button type="button" class="btn-modern btn-primary-modern" id="newPredictionBtn">
+            {% trans "🔄 Yeni Tahmin Yap" %}
+          </button>
         </div>
         {% endif %}
       </div>
@@ -1060,6 +1089,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('loadingOverlay').style.display = 'flex';
   });
+
+  // Hide form if prediction result exists and show only result
+  {% if prediction_result %}
+  const formContainer = document.getElementById('formContainer');
+  const resultContainer = document.getElementById('predictionResultContainer');
+  
+  if (formContainer && resultContainer) {
+    formContainer.classList.add('form-hidden');
+    resultContainer.classList.add('result-mode');
+    
+    // Scroll to top smoothly
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+  
+  // New prediction button functionality
+  const newPredictionBtn = document.getElementById('newPredictionBtn');
+  if (newPredictionBtn) {
+    newPredictionBtn.addEventListener('click', function() {
+      // Reload the page to start fresh
+      window.location.href = window.location.pathname;
+    });
+  }
+  {% endif %}
 
   // Gauge animation
   const gaugeNeedle = document.getElementById('gaugeNeedle');
